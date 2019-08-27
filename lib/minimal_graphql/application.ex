@@ -1,19 +1,21 @@
 defmodule MinimalGraphql.Application do
-  # See https://hexdocs.pm/elixir/Application.html
-  # for more information on OTP Applications
-  @moduledoc false
-
   use Application
 
-  def start(_type, _args) do
-    children = [
-      # Starts a worker by calling: MinimalGraphql.Worker.start_link(arg)
-      # {MinimalGraphql.Worker, arg}
-    ]
+  alias MinimalGraphql.Endpoint
 
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: MinimalGraphql.Supervisor]
-    Supervisor.start_link(children, opts)
+  def start(_type, _args),
+    do: Supervisor.start_link(children(), opts())
+
+  defp children do
+    [
+      {Plug.Cowboy, scheme: :http, plug: Endpoint, options: [port: Application.get_env(:minimal_graphql, :port)]}
+    ]
+  end
+
+  defp opts do
+    [
+      strategy: :one_for_one,
+      name: MinimalGraphql.Supervisor
+    ]
   end
 end
