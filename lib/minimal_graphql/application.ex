@@ -8,6 +8,7 @@ defmodule MinimalGraphql.Application do
 
   defp children do
     [
+      {MinimalGraphql.Repo, []},
       {Plug.Cowboy, scheme: :http, plug: Endpoint, options: [port: Application.get_env(:minimal_graphql, :port)]}
     ]
   end
